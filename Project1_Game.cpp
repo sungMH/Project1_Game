@@ -933,6 +933,7 @@ int main() {
 		});
 	nextH2->setOnMouseCallback([&](ObjectPtr, int, int, MouseAction)->bool {
 		timerSFT->set(0.0f);
+		timerMET->set(0.0f);
 		hGameScene->enter();
 		timerSFT->start();
 		timerMFT->start();
@@ -992,7 +993,7 @@ int main() {
 			moveEnermyTime = 2.0f;
 			timerSFT->set(setFireTime); timerSFT->stop();
 			timerMFT->set(moveFireTime); timerMFT->stop();
-			timerMET->set(moveEnermyTime); timerMET->stop();
+			timerMET->set(0.0f); timerMET->stop();
 			timerLevel->set(lev1); timerLevel->stop();
 			hideTimer();
 			int i = fireFront, j = fireRear;
