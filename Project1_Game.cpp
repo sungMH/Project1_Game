@@ -38,8 +38,8 @@ int main() {
 	auto TanGeumDaeGameButton = Object::create("images/탄금대.png", map, 500, 200);
 	auto HaeJeonGameButton = Object::create("images/해전.png", map, 300, 50);
 	auto quiz = Object::create("images/퀴즈.png", map, 1000, 300);
-	//bool clearP = false, clearT = false, clearH = false;
-	bool clearP = true, clearT = true, clearH = false;
+	bool clearP = false, clearT = false, clearH = false;
+	//bool clearP = true, clearT = false, clearH = true;
 
 	PyungYangGameButton->setScale(0.3f);
 	TanGeumDaeGameButton->setScale(0.3f);
@@ -339,7 +339,6 @@ int main() {
 
 
 	//평양성 전투
-   //구조체로 선언
 	ObjectPtr soldiers[11], officers[6], generals[3], enermies[31]; //병사 10, 부장 5, 장수 2, 왜군 30 큐로 저장
 	int solFront = 0, offFront = 0, gerFront = 0, solRear = 0, offRear = 0, gerRear = 0, enerFront = 0, enerRear = 0;
 	int numSol = 0, numOff = 0, numGer = 0, numEner = 0;
@@ -353,6 +352,19 @@ int main() {
 		});
 
 	goMapPB->setOnMouseCallback([&](ObjectPtr, int, int, MouseAction)->bool {
+		readySoldier = false;
+		readyOfficer = false;
+		readyGeneral = false;
+		generalB->setImage("images/장수준비버튼.png");
+		officerB->setImage("images/부장준비버튼.png");
+		soldierB->setImage("images/병사준비버튼.png");
+		timerP->set(gameTimeP);
+		timerP->stop();
+		timerPH->stop();
+		timerP1->stop();
+		timerP2->stop();
+		timerP3->stop();
+		timerP4->stop();
 		timerPH->set(hT);
 		timerP1->set(sT);
 		timerP2->set(oT);
@@ -365,6 +377,20 @@ int main() {
 			enerFront = (enerFront + 1) % 31;
 			enermies[enerFront]->hide();
 		}
+		while (solFront != solRear) {
+			solFront = (solFront + 1) % 11;
+			soldiers[solFront]->hide();
+		}
+		while (offFront != offRear) {
+			offFront = (offFront + 1) % 6;
+			officers[offFront]->hide();
+		}
+		while (gerFront != gerRear) {
+			gerFront = (gerFront + 1) % 3;
+			generals[gerFront]->hide();
+		}
+		enerFront = 0; solFront = 0; offFront = 0; gerFront = 0;
+		enerRear = 0; solRear = 0; offRear = 0; gerRear = 0;
 		numEner = 0;
 		map->enter();
 		return true;
@@ -388,6 +414,12 @@ int main() {
 
 
 	timerP->setOnTimerCallback([&](TimerPtr timer)->bool {
+		readySoldier = false;
+		readyOfficer = false;
+		readyGeneral = false;
+		generalB->setImage("images/장수준비버튼.png");
+		officerB->setImage("images/부장준비버튼.png");
+		soldierB->setImage("images/병사준비버튼.png");
 		timer->set(gameTimeP);
 		timer->stop();
 		timerPH->stop();
@@ -395,6 +427,35 @@ int main() {
 		timerP2->stop();
 		timerP3->stop();
 		timerP4->stop();
+		timerPH->set(hT);
+		timerP1->set(sT);
+		timerP2->set(oT);
+		timerP3->set(gT);
+		timerP4->set(eT);
+		timerP->set(gameTimeP);
+		hiddenB->setImage("images/불랑기포장전버튼.png");
+		hiddenB->hide();
+		hiddenP->hide();
+		readyHidden = false;
+		while (enerFront != enerRear) {
+			enerFront = (enerFront + 1) % 31;
+			enermies[enerFront]->hide();
+		}
+		while (solFront != solRear) {
+			solFront = (solFront + 1) % 11;
+			soldiers[solFront]->hide();
+		}
+		while (offFront != offRear) {
+			offFront = (offFront + 1) % 6;
+			officers[offFront]->hide();
+		}
+		while (gerFront != gerRear) {
+			gerFront = (gerFront + 1) % 3;
+			generals[gerFront]->hide();
+		}
+		enerFront = 0; solFront = 0; offFront = 0; gerFront = 0;
+		enerRear = 0; solRear = 0; offRear = 0; gerRear = 0;
+		numEner = 0;
 		showMessage("평양성전투 클리어!");
 		clearP = true;
 		hideTimer();
@@ -700,7 +761,8 @@ int main() {
 				}
 			}
 			hiddenT->setImage("images/신기전.png");
-			hiddenTB->show();
+			hiddenT->hide();
+			hiddenTB->hide();
 			myX = 0, myY = 120;
 			numOfBarrier = 0;
 			timerT->set(gameTime);
@@ -766,7 +828,26 @@ int main() {
 		}
 		if (myX >= 1280) {
 			timerT->set(gameTime);
+			myCharacter->locate(tGameScene, 0, 170);
+			for (int i = 0; i < numOfBarrier; i++) {
+				;
+				brrier[i]->hide();
+			}
+			for (int i = 0; i < 6; i++) {
+				for (int j = 0; j < 8; j++) {
+					point[i][j] = 0;
+				}
+			}
 			timerT->stop();
+			hiddenT->setImage("images/신기전.png");
+			hiddenTB->setImage("images/신기전발포버튼.png");
+			hiddenT->hide();
+			hiddenTB->hide();
+			myX = 0, myY = 120;
+			numOfBarrier = 0;
+			timerT->set(gameTime);
+			timerT->stop();
+
 			hideTimer();
 			victory->enter();
 			clearT = true;
@@ -826,7 +907,7 @@ int main() {
 	nextH2->setScale(0.3f);
 	auto prevH1 = Object::create("images/이전.png", hManual1, 60, 10);
 	auto prevH2 = Object::create("images/이전.png", hManual2, 60, 10);
-	double setFireTime = 5.0f, moveFireTime = 0.2f, moveEnermyTime = 2.0f,lev1=30.0f,lev2 =20.0f,lev3 =10.0f;
+	double setFireTime = 5.0f, moveFireTime = 0.2f, moveEnermyTime = 2.0f,lev1=10.0f,lev2 =5.0f,lev3 =5.0f;
 	auto timerSFT = Timer::create(setFireTime);
 	auto timerMFT = Timer::create(moveFireTime);
 	auto timerMET = Timer::create(moveEnermyTime);
@@ -851,6 +932,7 @@ int main() {
 		return true;
 		});
 	nextH2->setOnMouseCallback([&](ObjectPtr, int, int, MouseAction)->bool {
+		timerSFT->set(0.0f);
 		hGameScene->enter();
 		timerSFT->start();
 		timerMFT->start();
@@ -878,10 +960,7 @@ int main() {
 	auto ship = Object::create("images/판옥선1.png", hGameScene, 0, 220);
 	int shipX = 0, shipY = 220;
 	ObjectPtr fire[51]; 
-	///ObjectPtr enerm[51];
 	int pointFire[51][2]; 
-	//int pointEner[51][2];
-
 	ObjectPtr enerm1[31];
 	ObjectPtr enerm2[31];
 	ObjectPtr enerm3[31];
@@ -921,12 +1000,6 @@ int main() {
 				i = (i + 1) % 51;
 				fire[i]->hide();
 			}
-			/*i = enFront, j = enRear;
-			while (i != j) {
-				i = (i + 1) % 51;
-				enerm[i]->hide();
-			}*/
-
 			i = enFront1, j = enRear1;
 			while (i != j) {
 				i = (i + 1) % 31;
@@ -972,20 +1045,6 @@ int main() {
 			}
 		}
 		i = fireFront, j = fireRear;
-		/*int k = enFront, l = enRear;
-		while (i != j) {
-			i = (i + 1) % 51;
-			while (k != l) {
-				k = (k + 1) % 51;
-				if ((pointEner[k][1] == (pointFire[i][1] - 60)) && (pointEner[k][0] <= pointFire[i][0])) {
-					fire[i]->hide();
-					enerm[k]->hide();
-					fireFront = (fireFront + 1) % 51;
-					enFront = (enFront + 1) % 51;
-					break;
-				}
-			}
-		}*/
 
 		int k = enFront1, l = enRear1;
 		while (i != j) {
@@ -1052,10 +1111,37 @@ int main() {
 			showMessage("적들의 진군속도가 빨라졌습니다!");
 		}
 		else {//승리
+			hiddenShip1->hide(); hiddenShip2->hide();
+			moveEnermyTime = 2.0f;
+			level2 = false; level3 = false;
 			timerSFT->set(setFireTime); timerSFT->stop();
 			timerMFT->set(moveFireTime); timerMFT->stop();
-			timerMET->set(moveEnermyTime); timerMET->stop();
+			timerMET->set(0.0f); timerMET->stop();
 			timerLevel->set(lev1); timerLevel->stop();
+			int i = fireFront, j = fireRear;
+			while (i != j) {
+				i = (i + 1) % 51;
+				fire[i]->hide();
+			}
+			i = enFront1, j = enRear1;
+			while (i != j) {
+				i = (i + 1) % 31;
+				enerm1[i]->hide();
+			}
+			i = enFront2, j = enRear2;
+			while (i != j) {
+				i = (i + 1) % 31;
+				enerm2[i]->hide();
+			}
+			i = enFront3, j = enRear3;
+			while (i != j) {
+				i = (i + 1) % 31;
+				enerm3[i]->hide();
+			}
+			ship->locate(hGameScene, 0, 220);
+			enRear1 = 0; enFront1 = 0; enRear2 = 0; enFront2 = 0; enRear3 = 0; enFront3 = 0;
+			fireFront = 0; fireRear = 0;
+
 			hideTimer();
 			victory->enter();
 			clearH = true;
@@ -1077,37 +1163,6 @@ int main() {
 		else {
 			generating = true;
 		}
-		
-		/*
-		int i = enFront, j = enRear;
-		while (i != j) {
-			i = (i + 1) % 51;
-			pointEner[i][0] -= 150;
-			enerm[i]->locate(hGameScene, pointEner[i][0], pointEner[i][1]);
-			if (pointEner[i][0] <= 0) {
-				timerSFT->set(setFireTime); timerSFT->stop();
-				timerMFT->set(moveFireTime); timerMFT->stop();
-				timerMET->set(moveEnermyTime); timerMET->stop();
-				timerLevel->set(lev1); timerLevel->stop();
-				failH->enter();
-				hideTimer();
-			}
-
-			if (gethid3 && pointEner[i][0] <= 900 && (pointEner[i][1] ==20 || pointEner[i][1] == 420)) {
-				enerm[i]->hide();
-				enFront = (enFront + 1) % 51;
-			}
-		}
-		for (int i = 0; i < 3; i++) {
-			if (a[i] == 1) {
-				enRear = (enRear + 1) % 51;
-				enerm[enRear] = Object::create("images/안택선.png", hGameScene, 1280, 20 + i * 200);
-				pointEner[enRear][0] = 1280;
-				pointEner[enRear][1] = 20 + i * 200;
-			}
-		}
-		*/
-
 		int i = enFront1, j = enRear1;
 		while (i != j) {
 			i = (i + 1) % 31;
