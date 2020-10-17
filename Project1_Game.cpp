@@ -729,7 +729,7 @@ int main() {
 	nextT2->setOnMouseCallback([&](ObjectPtr, int, int, MouseAction)->bool {
 		tGameScene->enter();
 		for (int i = 0; i < 4; i++) {
-			for (int j = 0; j < 5; j++) {
+			for (int j = 0; j < 4; j++) {
 				int k = rand() % 5;
 				point[k][i * 2] = 1;
 			}
@@ -771,7 +771,7 @@ int main() {
 		});
 
 	upB->setOnMouseCallback([&](ObjectPtr, int, int, MouseAction)->bool {
-		if (myY <= 520) {
+		if (myY <= 320) {
 			myY += 100;
 			myCharacter->locate(tGameScene, myX, myY);
 			for (int i = 0; i < 20; i++) {
@@ -786,7 +786,7 @@ int main() {
 		return true;
 	});
 	downB->setOnMouseCallback([&](ObjectPtr, int, int, MouseAction)->bool {
-		if (myY >= 20) {
+		if (myY >= 120) {
 			myY -= 100;
 			myCharacter->locate(tGameScene, myX, myY);
 			for (int i = 0; i < 20; i++) {
