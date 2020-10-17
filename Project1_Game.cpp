@@ -15,8 +15,8 @@ int main() {
 	auto victory = Scene::create("승리!", "images/만세.png");
 	auto goMapB = Object::create("images/지도로돌아가기버튼.png", victory, 60, 500);
 	auto endB = Object::create("images/게임종료버튼.png", victory, 960, 500);
-	auto gameStartButton = Object::create("images/게임시작버튼.png", startScene,580,150);
-	auto gameEndButton = Object::create("images/게임종료.png", startScene, 700, 150);
+	auto gameStartButton = Object::create("images/게임시작버튼.png", startScene,530,150);
+	auto gameEndButton = Object::create("images/게임종료.png", startScene, 650, 150);
 	auto endB2 = Object::create("images/게임종료버튼.png", lastS, 810, 20);
 	auto goStart = Object::create("images/시작화면.png", lastS, 170, 20);
 
@@ -39,7 +39,7 @@ int main() {
 	auto HaeJeonGameButton = Object::create("images/해전.png", map, 300, 50);
 	auto quiz = Object::create("images/퀴즈.png", map, 1000, 300);
 	//bool clearP = false, clearT = false, clearH = false;
-	bool clearP = false, clearT = true, clearH = true;
+	bool clearP = true, clearT = true, clearH = false;
 
 	PyungYangGameButton->setScale(0.3f);
 	TanGeumDaeGameButton->setScale(0.3f);
@@ -52,7 +52,12 @@ int main() {
 		return true;
 		});
 	goMapB->setOnMouseCallback([&](ObjectPtr, int, int, MouseAction)->bool {
-		map->enter();
+		if (clearP && clearT && clearH) {
+			lastS->enter();
+		}
+		else {
+			map->enter();
+		}
 		return true;
 	});
 	endB->setOnMouseCallback([&](ObjectPtr, int, int, MouseAction)->bool {
@@ -259,7 +264,7 @@ int main() {
 		gethid1 = false; gethid2 = false; gethid3 = false;
 		clearT = false; clearP = false; clearH = false;
 		hiddenItem1->drop(); hiddenItem2->drop(); hiddenItem3->drop();
-		box1_locked = false, box2_locked = false, box3_locked = false;
+		box1_locked = true, box2_locked = true, box3_locked = true;
 		startScene->enter();
 		return true;
 		});
@@ -348,26 +353,20 @@ int main() {
 		});
 
 	goMapPB->setOnMouseCallback([&](ObjectPtr, int, int, MouseAction)->bool {
-		
-		if (clearT && clearH && clearP) {
-			lastS->enter();
+		timerPH->set(hT);
+		timerP1->set(sT);
+		timerP2->set(oT);
+		timerP3->set(gT);
+		timerP4->set(eT);
+		timerP->set(gameTimeP);
+		hiddenB->setImage("images/불랑기포장전버튼.png");
+		readyHidden = false;
+		while (enerFront != enerRear) {
+			enerFront = (enerFront + 1) % 31;
+			enermies[enerFront]->hide();
 		}
-		else {
-			map->enter();
-			timerPH->set(hT);
-			timerP1->set(sT);
-			timerP2->set(oT);
-			timerP3->set(gT);
-			timerP4->set(eT);
-			timerP->set(gameTimeP);
-			hiddenB->setImage("images/불랑기포장전버튼.png");
-			readyHidden = false;
-			while (enerFront != enerRear) {
-				enerFront = (enerFront + 1) % 31;
-				enermies[enerFront]->hide();
-			}
-			numEner = 0;
-		}
+		numEner = 0;
+		map->enter();
 		return true;
 	});
 
@@ -690,11 +689,6 @@ int main() {
 		});
 
 	goMapTB->setOnMouseCallback([&](ObjectPtr, int, int, MouseAction)->bool {
-	
-		if (clearT && clearH && clearP) {
-			lastS->enter();
-		}
-		else {
 			map->enter();
 			for (int i = 0; i < numOfBarrier; i++) {
 				;
@@ -711,7 +705,6 @@ int main() {
 			numOfBarrier = 0;
 			timerT->set(gameTime);
 			timerT->stop();
-		}
 		return true;
 		});
 
@@ -914,11 +907,6 @@ int main() {
 		});
 
 	goMapHB->setOnMouseCallback([&](ObjectPtr, int, int, MouseAction)->bool {
-		
-		if (clearT && clearH && clearP) {
-			lastS->enter();
-		}
-		else {
 			map->enter();
 			shipX = 0, shipY = 220;
 			level2 = false; level3 = false;
@@ -959,9 +947,9 @@ int main() {
 			ship->locate(hGameScene, 0, 220);
 			enRear1 = 0; enFront1 = 0; enRear2 = 0; enFront2 = 0; enRear3 = 0; enFront3 = 0;
 			fireFront = 0; fireRear = 0;
-		}
+		
 		return true;
-		});
+	});
 
 	
 	timerSFT->setOnTimerCallback([&](TimerPtr timer)->bool {
@@ -979,6 +967,7 @@ int main() {
 				fire[i]->locate(hGameScene, pointFire[i][0], pointFire[i][1]);
 			}
 			else {
+				fire[i]->hide();
 				fireFront = (fireFront + 1) % 51;
 			}
 		}
